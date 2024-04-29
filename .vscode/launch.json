@@ -1,0 +1,29 @@
+{
+
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/net7.0/WSLAttachSwitch.dll",
+            "args": ["--verbose", "Default Switch"],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": true,
+            "console": "internalConsole",
+            "pipeTransport": {
+                "pipeCwd": "${workspaceFolder}",
+                "pipeProgram": "/usr/bin/ssh",
+                "pipeArgs": [],
+                "debuggerPath": "~/vsdbg/vsdbg"
+            }
+        },
+        {
+            "name": "C#: WSLAttachSwitch",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/WSLAttachSwitch.csproj",
+            "launchConfigurationId": "TargetFramework=;WSLAttachSwitch"
+        }
+    ]
+}

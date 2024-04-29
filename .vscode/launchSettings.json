@@ -1,0 +1,12 @@
+{
+    "profiles": {
+      "ProfileNameGoesHere": {
+        "commandName": "Project",
+        "environmentVariables": {
+          "myVariableName": "theValueGoesHere"
+        },
+        "commandLineArgs": "--verbose \"Default Switch\""
+      }
+    }
+  }
+  

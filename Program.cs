@@ -37,11 +37,16 @@ namespace WSLAttachSwitch
             return new Guid(guidbytes);
         }
 
-        static bool Attach(string networkName, string macAddress = null, int? vlanIsolationId = null)
+        static bool Attach(string networkName, string macAddress = null, int? vlanIsolationId = null, bool? verbose=false)
         {
             try
             {
+                var allSystems = ComputeSystem.Enumerate(new JsonObject { ["Owners"]= new JsonArray()});
+                foreach ( var item in allSystems){
+                    Console.WriteLine("Found system:" + item);
+                };
                 var systems = ComputeSystem.Enumerate(new JsonObject { ["Owners"] = new JsonArray("WSL") });
+
                 if (systems.Length != 1)
                 {
                     Console.Error.WriteLine("Can't find unique WSL VM. Is WSL2 running?");
@@ -192,6 +197,7 @@ namespace WSLAttachSwitch
                     return mac;
                 });
             var vlanIdOption = new Option<int?>("--vlan", "If specified, enable VLAN filtering with this VLAN ID for the virtual interface.");
+            var verboseFlag = new Option<bool?>("--verbose", "Be verbose.");
             vlanIdOption.AddValidator(static result =>
             {
                 var vlanid = result.GetValueOrDefault<int?>();
@@ -204,14 +210,15 @@ namespace WSLAttachSwitch
 
             command.AddOption(macAddressOption);
             command.AddOption(vlanIdOption);
+            command.AddOption(verboseFlag);
             command.AddArgument(networkArg);
             var status = 0;
 
-            command.SetHandler((network, macAddress, vlanId) =>
+            command.SetHandler((network, macAddress, vlanId, verbose) =>
             {
-                status = Attach(network, macAddress, vlanId) ? 0 : 1;
+                status = Attach(network, macAddress, vlanId, verbose) ? 0 : 1;
 
-            }, networkArg, macAddressOption, vlanIdOption);
+            }, networkArg, macAddressOption, vlanIdOption, verboseFlag);
 
             command.Invoke(args);
             return status;

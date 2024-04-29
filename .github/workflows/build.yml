@@ -1,14 +1,18 @@
-name: build
+name: build WSLAttachSwitch
+
+#on:
+#  push:
+#    branches: [ master ]
 
 on:
-  push:
-    branches: [ AddDebug ]
+  workflow_dispatch:
 
 jobs:
   build-amd64:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.4.1
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -24,6 +28,10 @@ jobs:
         name: WSLAttachSwitch
         # Directory containing files to upload
         path: bin/publish
+
+  release-not-4-prod:
+    runs-on: windows-latest
+    steps:
     - name: prerelease
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
@@ -34,3 +42,11 @@ jobs:
         files: |
           bin/publish/WSLAttachSwitch.exe
           bin/publish/WSLAttachSwitch.pdb
+
+  run-remote:
+    runs-on: windows-latest
+    steps:
+    - name: run
+      run: |
+        bin/publish/WSLAttachSwitch.exe --verbose "test.spark"
+      shell: cmd
